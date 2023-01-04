@@ -1,0 +1,115 @@
+---
+import { freshModules } from "../../lib/td";
+import { decodeUriModule, encodeUriModule } from "../../lib/url";
+import Sections from "./Sections.svelte";
+import { mediaDesktop } from "../../lib/responsive/breakpoint";
+import Navbar from "./Navbar.astro";
+import { Section } from "./Sections";
+
+function getRootHrefModule(hrefModule: string) {
+    return decodeUriModule(hrefModule.split("/")[2]).split("/")[0];
+}
+function areHrefCousins(a: string, b: string) {
+    if (a.startsWith("/modules/") && b.startsWith("/modules/"))
+        return getRootHrefModule(a) === getRootHrefModule(b);
+    return false;
+}
+
+const sections: Section[] = [
+    {
+        title: "Getting Started",
+        items: [
+            { title: "Home", href: "/" },
+            { title: "Installation", href: "/getting-started/installation" },
+            { title: "Usage", href: "/getting-started/usage" },
+            { title: "Configuration", href: "/getting-started/configuration" },
+            { title: "FAQ", href: "/getting-started/faq" },
+        ],
+    },
+    {
+        title: "Modules",
+        code: true,
+        items: Array.from(freshModules.keys())
+            .map((alias) => ({
+                title: alias,
+                href: `/modules/${encodeUriModule(alias)}`,
+                depth: +alias.includes("/"),
+            }))
+            .filter(
+                (link) =>
+                    !link.href.startsWith("/modules/") ||
+                    !link.depth ||
+                    areHrefCousins(link.href, Astro.url.pathname)
+            ),
+    },
+];
+---
+
+<div class="frame">
+    <div class="frame-content">
+        <slot />
+    </div>
+    <div class="frame-navbar">
+        <Navbar />
+    </div>
+    <div class="frame-sections scroller">
+        <Sections
+            client:media={mediaDesktop}
+            sections={sections}
+            activePath={Astro.url.pathname}
+        />
+    </div>
+</div>
+
+<style lang="scss">
+    @use "../../assets/responsive";
+
+    $sidebar-width: 240px;
+    $navbar-height: 48px;
+
+    .frame {
+        display: grid;
+        height: 100vh;
+        width: 100vw;
+        overflow: hidden;
+        grid-template-rows: #{$navbar-height} auto 1fr;
+        grid-template-columns: auto;
+        grid-template-areas: "navbar" "sections" "content";
+        @include responsive.desktop {
+            grid-template-rows: #{$navbar-height} 1fr;
+            grid-template-columns: auto #{$sidebar-width} 2rem 55% auto;
+            grid-template-areas: "navbar navbar navbar navbar navbar" ". sections . content .";
+        }
+        @include responsive.mobile {
+            .sections-isopen & {
+                grid-template-rows: #{$navbar-height} 1fr;
+                grid-template-columns: auto;
+                grid-template-areas: "navbar" "sections";
+            }
+        }
+    }
+    .frame-navbar {
+        grid-area: navbar;
+    }
+    .frame-sections {
+        --sections-bg: var(--catppuccin-base);
+        --scroller-bg: var(--catppuccin-base);
+        grid-area: sections;
+        display: content;
+        background: var(--sections-bg);
+
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
+    .frame-content {
+        grid-area: content;
+        padding: 1rem 0;
+
+        @include responsive.mobile {
+            padding: 1rem 2rem;
+            .sections-isopen & {
+                display: none;
+            }
+        }
+    }
+</style>

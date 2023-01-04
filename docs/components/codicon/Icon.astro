@@ -1,0 +1,35 @@
+---
+import { SourceKind } from "../../lib/td";
+import { addIcon } from "./spritesheet";
+
+interface Props {
+    name: string | SourceKind;
+    size?: number;
+}
+
+const { size = 16 } = Astro.props;
+let { name } = Astro.props;
+
+const getColor = (name: string) => `var(--catppuccin-${name})`;
+const kindMap: { [key in SourceKind]: [string, string, string] } = {
+    [SourceKind.Unknown]: ["question", "inherit", "Unknown"],
+    [SourceKind.Var]: ["symbol-variable", getColor("blue"), "Variable"],
+    [SourceKind.Const]: ["symbol-constant", getColor("teal"), "Constant"],
+    [SourceKind.Function]: ["symbol-method", getColor("mauve"), "Function"],
+    [SourceKind.Class]: ["symbol-class", getColor("blue"), "Class"],
+    [SourceKind.Type]: ["symbol-interface", getColor("yellow"), "Type"],
+    [SourceKind.Enum]: ["symbol-enum", getColor("mauve"), "Enum"],
+};
+
+let color: string = "inherit";
+let title: string;
+if (typeof name !== "string") [name, color, title] = kindMap[name];
+
+addIcon(Astro.url.pathname, name);
+---
+
+<div style="display:contents" title={title}>
+    <svg width={size} height={size} style={{ color }}>
+        <use xlink:href={`#${name}`}></use>
+    </svg>
+</div>

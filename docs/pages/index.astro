@@ -1,0 +1,12 @@
+---
+import Markdown from "../components/md/Markdown.astro";
+import Codicon from "../components/codicon/Icon.astro";
+import NavContent from "../layouts/NavContent.astro";
+---
+
+<NavContent>
+    <Markdown
+        md="## Modules\n```ts\nconsole.log(`Hello ${name.slice(0, 3)} :) !`)\n```"
+    />
+    <Codicon name="symbol-method" />
+</NavContent>

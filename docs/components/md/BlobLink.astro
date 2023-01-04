@@ -1,0 +1,12 @@
+---
+import ExternalLink from "./ExternalLink.astro";
+
+interface Props {
+    file: string;
+}
+const { file } = Astro.props;
+
+const repo = import.meta.env.PUBLIC_REPO;
+---
+
+<ExternalLink href={`${repo}/blob/main/${file}`}><slot /></ExternalLink>

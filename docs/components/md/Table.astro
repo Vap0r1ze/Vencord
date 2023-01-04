@@ -1,0 +1,35 @@
+---
+import type { HTMLAttributes } from "astro/types";
+
+interface Props {
+    align?: (HTMLAttributes<"td">["align"] & {})[];
+    headers?: string[];
+    rows: React.ReactNode[][];
+}
+const { align = [], headers, rows } = Astro.props;
+---
+
+<table>
+    {
+        headers.length && (
+            <thead>
+                <tr>
+                    {headers.map((header, i) => (
+                        <th align={align[i] ?? "left"}>{header}</th>
+                    ))}
+                </tr>
+            </thead>
+        )
+    }
+    <tbody>
+        {
+            rows.map((columns) => (
+                <tr>
+                    {columns.map((column, i) => (
+                        <td align={align[i] ?? "left"}>{column}</td>
+                    ))}
+                </tr>
+            ))
+        }
+    </tbody>
+</table>

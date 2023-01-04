@@ -1,0 +1,46 @@
+@use "catppuccin";
+
+$themes: (
+    "dark": "mocha",
+    "light": "latte",
+);
+
+@mixin color($name, $color) {
+    --catppuccin-#{$name}: #{$color};
+}
+
+@each $theme, $variant in $themes {
+    @each $name, $color in map-get(catppuccin.$palette, $variant) {
+        :root {
+            @media (prefers-color-scheme: $theme) {
+                @include color($name, $color);
+            }
+        }
+        .theme-#{$theme} {
+            @include color($name, $color);
+        }
+    }
+}
+
+:root {
+    color: var(--catppuccin-text);
+    background: var(--catppuccin-base);
+}
+
+.md {
+    --color-fg-default: var(--catppuccin-text);
+    --color-fg-muted: var(--catppuccin-subtext1);
+    --color-fg-subtle: var(--catppuccin-subtext1);
+    --color-canvas-default: var(--catppuccin-base);
+    // --color-canvas-subtle: #181825;
+    --color-canvas-subtle: red;
+    --color-border-default: var(--catppuccin-surface1);
+    --color-border-muted: var(--catppuccin-surface0);
+    // --color-neutral-muted: #6e768166;
+    --color-neutral-muted: red;
+    --color-accent-fg: var(--catppuccin-blue);
+    --color-accent-emphasis: var(--catppuccin-blue);
+    // --color-attention-subtle: #bb800926;
+    --color-attention-subtle: red;
+    --color-danger-fg: var(--catppuccin-red);
+}

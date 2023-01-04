@@ -1,0 +1,35 @@
+---
+import Icon from "../../components/codicon/Icon.astro";
+import NavContent from "../../layouts/NavContent.astro";
+import { getExports, modules } from "../../lib/td/modules";
+import { decodeUriModule, encodeUriModule } from "../../lib/url";
+
+export function getStaticPaths() {
+    return Array.from(modules.keys()).map((alias) => ({
+        params: { alias: encodeUriModule(alias) },
+    }));
+}
+
+const { alias } = Astro.params;
+const module = alias ? modules.get(decodeUriModule(alias)) : null;
+const exports = getExports(module);
+
+function getReport(e: typeof exports[number]) {
+    let r = `${e.name} is a ${e.source.decl.kindString}`;
+    if (e.source.module.name !== module.name)
+        r += ` from ${e.source.module.name}`;
+    if (e.source.name !== e.name) r += ` (originally ${e.source.name})`;
+    return r;
+}
+---
+
+<NavContent>
+    {
+        exports.map((e) => (
+            <li>
+                <Icon name={e.kind} />
+                <span>{getReport(e)}</span>
+            </li>
+        ))
+    }
+</NavContent>

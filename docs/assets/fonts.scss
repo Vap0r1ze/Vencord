@@ -1,0 +1,15 @@
+@import "@fontsource/inter";
+@import "@fontsource/cascadia-code";
+
+:root {
+    --font-primary: "Inter", sans-serif;
+    --font-code: "Cascadia Code", monospace;
+}
+
+.font-code {
+    font-family: var(--font-code);
+}
+
+body {
+    font-family: var(--font-primary);
+}

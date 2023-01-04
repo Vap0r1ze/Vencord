@@ -1,0 +1,14 @@
+{
+    "extends": "astro/tsconfigs/base",
+    "compilerOptions": {
+        "noImplicitAny": true,
+        "jsx": "react-jsx",
+        "jsxImportSource": "react"
+    },
+    "include": [
+        "./**/*.astro",
+        "./**/*.svelte",
+        "./**/*.ts",
+        "./**/*.tsx"
+    ]
+}

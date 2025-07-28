@@ -23,6 +23,7 @@ import { readdir } from "fs/promises";
 import { join } from "path";
 
 import { BUILD_TIMESTAMP, commonOpts, exists, globPlugins, IS_DEV, IS_REPORTER, IS_STANDALONE, IS_UPDATER_DISABLED, resolvePluginName, VERSION, commonRendererPlugins, watch, buildOrWatchAll, stringifyValues } from "./common.mjs";
+import { hmrPlugin } from "./hmr/plugin.mjs";
 
 const defines = stringifyValues({
     IS_STANDALONE,
@@ -137,8 +138,8 @@ const buildConfigs = ([
         sourcemap,
         plugins: [
             globPlugins("discordDesktop"),
-            ...commonRendererPlugins
-        ],
+            ...commonRendererPlugins,
+        ].concat(watch ? [hmrPlugin] : []),
         define: {
             ...defines,
             IS_DISCORD_DESKTOP: "true",
